@@ -8,6 +8,17 @@
 
 Gradle 插件版本（如 Spring Boot 插件）不由本 BOM 管理，消费方在自己的 `gradle.properties` 里声明，并与本仓库的 `springBootVersion` 对齐。
 
+## 版本清单
+
+- Markdown（GitHub 仓库内可直接渲染）：[versions.md](versions.md)
+- HTML 页面（GitHub Pages）：https://tcq1007.github.io/springboot-dependencies/versions.html
+
+本地更新清单：
+
+```bash
+./gradlew generateVersionHtml
+```
+
 ## 本地发布
 
 ```bash
@@ -56,5 +67,6 @@ dependencyManagement {
 
 1. 改本仓库 `gradle.properties`
 2. 调高 `springbootDependenciesVersion`
-3. `./gradlew publishToMavenLocal` 或 `./gradlew publish`
-4. 消费方改 `springbootDependenciesVersion`，并按需同步插件相关版本
+3. `./gradlew generateVersionHtml`
+4. `./gradlew publishToMavenLocal` 或 `./gradlew publish`
+5. 消费方改 `springbootDependenciesVersion`，并按需同步插件相关版本

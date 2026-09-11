@@ -70,10 +70,11 @@ publishing {
 
 tasks.register('generateVersionHtml') {
     group = 'documentation'
-    description = 'Generate versions.html from this java-platform BOM declarations'
+    description = 'Generate versions.html and versions.md from this java-platform BOM'
 
-    def outputFile = layout.projectDirectory.file('versions.html')
-    outputs.file(outputFile)
+    def htmlFile = layout.projectDirectory.file('versions.html')
+    def mdFile = layout.projectDirectory.file('versions.md')
+    outputs.files(htmlFile, mdFile)
 
     inputs.property('platformVersion', provider { project.version.toString() })
     inputs.files(file('gradle.properties'))
@@ -82,7 +83,6 @@ tasks.register('generateVersionHtml') {
         def platformRows = new TreeMap<String, String>()
         def constraintRows = new TreeMap<String, String>()
 
-        // java-platform api is not resolvable; read declared platforms + constraints
         def api = configurations.getByName('api')
 
         api.dependencies.each { dep ->
@@ -105,14 +105,22 @@ tasks.register('generateVersionHtml') {
             constraintRows[key] = ver ?: 'unspecified'
         }
 
-        def toTableRows = { Map<String, String> rows ->
+        def toHtmlRows = { Map<String, String> rows ->
             rows.collect { k, v ->
                 "<tr><td><code>${k}</code></td><td><code>${v}</code></td></tr>"
             }.join('\n')
         }
 
+        def toMdRows = { Map<String, String> rows ->
+            rows.collect { k, v ->
+                "| `${k}` | `${v}` |"
+            }.join('\n')
+        }
+
         def total = platformRows.size() + constraintRows.size()
-        outputFile.getAsFile().setText("""<!DOCTYPE html>
+        def platformVersion = project.version.toString()
+
+        htmlFile.getAsFile().setText("""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -129,14 +137,14 @@ tasks.register('generateVersionHtml') {
 </head>
 <body>
 <h1>BOM dependency versions</h1>
-<p>Platform <code>${project.version}</code> - ${total} entries (${platformRows.size()} imported BOMs, ${constraintRows.size()} constraints).</p>
+<p>Platform <code>${platformVersion}</code> - ${total} entries (${platformRows.size()} imported BOMs, ${constraintRows.size()} constraints).</p>
 
 <h2>Imported BOMs</h2>
 <p>Upstream platforms re-exported by this BOM.</p>
 <table>
 <thead><tr><th>Coordinates (group:artifact)</th><th>Version</th></tr></thead>
 <tbody>
-${toTableRows(platformRows)}
+${toHtmlRows(platformRows)}
 </tbody>
 </table>
 
@@ -145,14 +153,38 @@ ${toTableRows(platformRows)}
 <table>
 <thead><tr><th>Coordinates (group:artifact)</th><th>Version</th></tr></thead>
 <tbody>
-${toTableRows(constraintRows)}
+${toHtmlRows(constraintRows)}
 </tbody>
 </table>
 </body>
 </html>""", 'UTF-8')
 
-        logger.lifecycle("Wrote ${platformRows.size()} BOM imports and ${constraintRows.size()} constraints to ${outputFile.getAsFile()}")
+        mdFile.getAsFile().setText("""# BOM dependency versions
+
+Platform `${platformVersion}` - ${total} entries (${platformRows.size()} imported BOMs, ${constraintRows.size()} constraints).
+
+HTML page (GitHub Pages): https://tcq1007.github.io/springboot-dependencies/versions.html
+
+## Imported BOMs
+
+Upstream platforms re-exported by this BOM.
+
+| Coordinates (group:artifact) | Version |
+| --- | --- |
+${toMdRows(platformRows)}
+
+## Direct constraints
+
+Third-party versions locked directly by this BOM.
+
+| Coordinates (group:artifact) | Version |
+| --- | --- |
+${toMdRows(constraintRows)}
+""", 'UTF-8')
+
+        logger.lifecycle("Wrote ${platformRows.size()} BOM imports and ${constraintRows.size()} constraints to ${htmlFile.getAsFile()} and ${mdFile.getAsFile()}")
     }
 }
+
 
 
