@@ -26,7 +26,6 @@ dependencies {
         api "org.mapstruct:mapstruct-processor:${mapstructVersion}"
         api "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
         api "com.baizhukui:knife4j-openapi3-boot4-spring-boot-starter:${knife4jVersion}"
-        api "com.alibaba.cloud:spring-alibaba-nacos-config:${alibabaNacosConfigVersion}"
         api "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
         api "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
         api "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"

@@ -1,6 +1,6 @@
 # BOM dependency versions
 
-Platform `boot-4.1.1-1` - 20 entries (4 imported BOMs, 16 constraints).
+Platform `boot-4.1.1-1` - 19 entries (4 imported BOMs, 15 constraints).
 
 HTML page (GitHub Pages): https://tcq1007.github.io/springboot-dependencies/versions.html
 
@@ -21,7 +21,6 @@ Third-party versions locked directly by this BOM.
 
 | Coordinates (group:artifact) | Version |
 | --- | --- |
-| `com.alibaba.cloud:spring-alibaba-nacos-config` | `2025.1.0.0` |
 | `com.baizhukui:knife4j-openapi3-boot4-spring-boot-starter` | `5.0.13` |
 | `com.github.ben-manes.caffeine:caffeine` | `3.2.4` |
 | `com.google.guava:guava` | `33.6.0-jre` |
